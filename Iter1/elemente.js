@@ -141,18 +141,21 @@ function Zug(a, b) {
     }
 }
 
-Zug.ausZeichenkette = function(s) {
-    var von, nach;
+Zug.ausZeichenkette = function (s) {
+    var von,
+        nach,
+        zug;
+
     if (typeof s === "string" && s.match(/[a-h][1-8][a-h][1-8]/)) {
         von = Feld.nameNachNr(s.substr(0, 2));
         nach = Feld.nameNachNr(s.substr(2, 2));
-        return new Zug(von, nach);
-    } else {
-        return undefined;
+        zug = new Zug(von, nach);
     }
+
+    return zug;
 };
 
-Zug.prototype.nachZeichenkette = function () {
+Zug.prototype.toString = function () {
     var sVon, sNach;
 
     sVon = Feld.nrNachName(this.von);

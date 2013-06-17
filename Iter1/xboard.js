@@ -80,7 +80,7 @@ process.stdin.on('data', function (text) {
 
         zug = findeBauernZugMitEinemFeldFrei(stellung);
 
-        console.log('move ' + zug.nachZeichenkette());
+        console.log('move ' + zug);
 
         stellung = stellung.fuehreZugAus(zug);
 
