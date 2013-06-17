@@ -56,7 +56,7 @@ Figur.ausBuchstabe = function (c) {
 var Feld = {
 
     nameNachNr: function (name) {
-        if (typeof (name) !== "string" || !name.match(/[a-h][1-8]/)) {
+        if (typeof name !== "string" || !name.match(/[a-h][1-8]/)) {
             return undefined;
         } else {
             var linie = name.charAt(0),
@@ -87,17 +87,17 @@ var Feld = {
     },
 
     ausBewegung: function (start, dx, dy) {
-        var spalte = start % 8,
+        var feld,
+            spalte = start % 8,
             zeile = ((start - spalte)) / 8;
 
         spalte += dx;
         zeile += dy;
 
-        if (zeile < 0 || zeile > 7 || spalte < 0 || spalte > 7) {
-            return undefined;
-        } else {
-            return zeile * 8 + spalte;
+        if (!(zeile < 0 || zeile > 7 || spalte < 0 || spalte > 7)) {
+            feld = zeile * 8 + spalte;
         }
+        return feld;
     },
 
     spalte: function (feldNummer) {
@@ -130,7 +130,7 @@ Zug.ausZeichenkette = function(s) {
     }
 };
 
-Zug.prototype.nachZeichenkette = function() {
+Zug.prototype.nachZeichenkette = function () {
     var sVon, sNach;
 
     sVon = Feld.nrNachName(this.von);
