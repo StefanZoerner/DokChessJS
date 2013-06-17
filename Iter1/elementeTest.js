@@ -16,6 +16,8 @@
  * along with DokChess.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+"use strict";
+
 var dokchess = require("./elemente.js");
 
 var Farbe = dokchess.Farbe;
@@ -27,8 +29,6 @@ var Zug = dokchess.Zug;
 
 exports['Farbe'] = function (test) {
     test.equal(Farbe.andere(Farbe.WEISS), Farbe.SCHWARZ);
-    test.equal(Farbe.alsBuchstabe(Farbe.WEISS), 'w');
-
     test.done();
 };
 

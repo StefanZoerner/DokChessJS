@@ -16,6 +16,8 @@
  * along with DokChess.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+"use strict";
+
 process.stdin.resume();
 process.stdin.setEncoding('utf8');
 
@@ -33,9 +35,9 @@ function findeBauernZugMitEinemFeldFrei(stellung) {
     var farbe, i, figur, zeile, spalte, dy, ziel;
 
     for (i = 0; i < 64; i += 1) {
-        if (! stellung.istFrei(i)) {
+        if (!stellung.istFrei(i)) {
             figur = stellung.brett[i];
-            if ( figur.farbe === stellung.amZug && figur.art === FigurenArt.BAUER) {
+            if (figur.farbe === stellung.amZug && figur.art === FigurenArt.BAUER) {
                 zeile = Feld.zeile(i);
                 spalte = Feld.spalte(i);
 

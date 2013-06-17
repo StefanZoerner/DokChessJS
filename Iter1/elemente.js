@@ -18,37 +18,49 @@
 
 "use strict";
 
+/**
+ * Spielerfarbe im Schach, schwarz oder weiss.
+ *
+ * @enum {string}
+ */
 var Farbe = {
 
-    WEISS: 0,
-    SCHWARZ: 1,
+    WEISS: 'w',
+    SCHWARZ: 'b',
 
     /**
      * Liefert die jeweils andere Farbe zurueck
+     *
+     * @param {Farbe} f
+     * @returns {Farbe}
+     * @static
      */
     andere: function (f) {
         return f === Farbe.WEISS ? Farbe.SCHWARZ : Farbe.WEISS;
-    },
-
-    alsBuchstabe: function (f) {
-        return f === Farbe.WEISS ? 'w' : 'b';
     }
 };
 
+/**
+ * Figurenarten im Schach, davon gibt es sechs.
+ *
+ * @enum {string}
+ */
 var FigurenArt = {
-    BAUER: 0,
-    SPRINGER: 1,
-    LAEUFER: 2,
-    TURM: 3,
-    DAME: 4,
-    KOENIG: 5,
 
-    alsBuchstabe: function (a) {
-        return 'pnbrqk'.charAt(a);
-    },
+    BAUER:    'p',
+    SPRINGER: 'n',
+    LAEUFER:  'b',
+    TURM:     'r',
+    DAME:     'q',
+    KOENIG:   'k',
 
     ausBuchstabe: function (c) {
-        return 'pnbrqk'.indexOf(c.toLowerCase());
+        var result,
+            cLower = c.toLowerCase();
+        if ('pnbrqk'.indexOf(cLower) >= 0) {
+            result = cLower;
+        }
+        return result;
     }
 };
 
