@@ -26,11 +26,18 @@ var elemente = require("./elemente.js");
 var Stellung = elemente.Stellung;
 var Zug = elemente.Zug;
 
-var zugauswahl = require("./minimax.js");
-var EinfacheZugauswahl = zugauswahl.EinfacheZugauswahl;
+var regeln = require("./spielregeln.js");
+var Spielregeln = regeln.Spielregeln;
+
+var bewertung = require("./bewertung.js");
+var MaterialBewertung = bewertung.MaterialBewertung;
+
+var minimax = require("./minimax.js");
+var MinimaxAlgorithmus = minimax.MinimaxAlgorithmus;
 
 
 var stellung = new Stellung();
+var algorithmus = new MinimaxAlgorithmus(Spielregeln, MaterialBewertung, 4);
 
 function quit() {
     process.exit();
@@ -58,7 +65,7 @@ process.stdin.on('data', function (text) {
     zug = Zug.ausZeichenkette(text);
     if (zug !== undefined) {
         stellung = stellung.fuehreZugAus(zug);
-        zug = EinfacheZugauswahl.ermittleZug(stellung);
+        zug = algorithmus.ermittleZug(stellung);
         console.log('move ' + zug);
         stellung = stellung.fuehreZugAus(zug);
     }
