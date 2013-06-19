@@ -19,13 +19,19 @@
 "use strict";
 
 var regeln = require("./spielregeln.js");
-var Spielregeln = regeln.Spielregeln;
-
 var bewertung = require("./bewertung.js");
+
+var Spielregeln = regeln.Spielregeln;
 var MaterialBewertung = bewertung.MaterialBewertung;
 
 var EinfacheZugauswahl = {
 
+    /**
+     * Waehlt einen gueltigen Zug aus.
+     *
+     * @param {Stellung} stellung
+     * @returns {*}
+     */
     ermittleZug: function (stellung) {
         var zuege,
             ausgewaehlterZug,

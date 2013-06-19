@@ -82,6 +82,10 @@ Figur.ausBuchstabe = function (c) {
     return new Figur(farbe, art);
 };
 
+Figur.prototype.toString = function () {
+    return this.farbe === Farbe.WEISS ? this.art.toUpperCase() : this.art;
+};
+
 var Feld = {
 
     a8: 0,
@@ -242,7 +246,7 @@ Zug.prototype.toString = function() {
 
     sVon = Feld.nrNachName(this.von);
     sNach = Feld.nrNachName(this.nach);
-    sUm = (this.umwandlung == undefined) ? '' : this.umwandlung;
+    sUm = (this.umwandlung === undefined) ? '' : this.umwandlung;
 
 
     return sVon + sNach + sUm;
@@ -393,6 +397,49 @@ Stellung.prototype.fuehreZugAus = function (zug) {
 
     return neueStellung;
 };
+
+Stellung.prototype.toString = function () {
+    var result = '',
+        zeile,
+        spalte,
+        feld,
+        figur,
+        leer;
+
+    leer = 0;
+    for (zeile = 0; zeile < 8; zeile += 1) {
+        for (spalte = 0; spalte < 8; spalte += 1) {
+            feld = Feld.ausKoordinaten(zeile,spalte);
+            figur = this.brett[feld];
+            if (figur === undefined) {
+                leer += 1;
+            } else {
+                result += figur.toString();
+                if (leer > 0) {
+                    result += leer;
+                    leer = 0;
+                }
+            }
+        }
+        if (leer > 0) {
+            result += leer;
+            leer = 0;
+        }
+        if (zeile < 7) {
+            result += '/'
+        }
+    }
+
+    result += ' ';
+    result += this.amZug;
+    result += ' ';
+    result += this.rochadeRechte;
+    result += ' ';
+    result += this.enPassant === undefined ? '-' : this.enPassant;
+    result += ' 0 1';
+
+    return result;
+}
 
 Stellung.prototype.istFrei = function (feld) {
     return this.brett[feld] === undefined;
