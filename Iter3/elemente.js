@@ -25,7 +25,7 @@
  */
 var Farbe = {
 
-    WEISS: 'w',
+    WEISS:   'w',
     SCHWARZ: 'b',
 
     /**
@@ -64,6 +64,11 @@ var FigurenArt = {
     }
 };
 
+/**
+ * Rochaderechte im Schach.
+ *
+ * @enum {string}
+ */
 var RochadeRecht = {
     WEISS_KURZ: 'K',
     WEISS_LANG: 'Q',
