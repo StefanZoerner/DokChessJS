@@ -18,7 +18,7 @@
 
 "use strict";
 
-var dokchess = require("./elemente.js");
+var dokchess = require("./../elemente.js");
 
 var Farbe = dokchess.Farbe;
 var Figur = dokchess.Figur;
