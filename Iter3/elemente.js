@@ -25,7 +25,7 @@
  */
 var Farbe = {
 
-    WEISS:   'w',
+    WEISS: 'w',
     SCHWARZ: 'b',
 
     /**
@@ -65,7 +65,7 @@ var FigurenArt = {
 };
 
 /**
- * Rochaderechte im Schach.
+ * Die verschiedenen Rochaderechte.
  *
  * @enum {string}
  */
@@ -76,19 +76,46 @@ var RochadeRecht = {
     SCHWARZ_LANG: 'q'
 };
 
+/**
+ * Spielfigur im Schach.
+ *
+ * @param {Farbe} farbe die Farbe, z.B. schwarz
+ * @param {FigurenArt} art die Art, z.B. Bauer
+ * @constructor
+ */
 function Figur(farbe, art) {
     this.farbe = farbe;
     this.art = art;
 }
 
+/**
+ * Erzeugt eine Figur aus der in FEN ueblichen Buchstabennotation. Kleine Buchstaben stehen fuer schwarze Figuren,
+ * grosse fuer weisse. 'K' ist z.B. der weisse Koenig.
+ *
+ * @static
+ * @param c
+ * @returns {Figur}
+ */
 Figur.ausBuchstabe = function (c) {
     var art = FigurenArt.ausBuchstabe(c),
         farbe = (c === c.toUpperCase()) ? Farbe.WEISS : Farbe.SCHWARZ;
     return new Figur(farbe, art);
 };
 
+/**
+ * Liefert die in FEN uebliche Buchstabennotation der Figur, 'K' ist z.B. der weisse Koenig, 'k' der schwarze.
+ *
+ * @returns {string}
+ */
+Figur.prototype.toString = function () {
+    return this.farbe === Farbe.WEISS ? this.art.toUpperCase() : this.art;
+};
+
+/*  Die Felder des Bretts werden durch Zahlen 0 - 63 repraesentiert. Hier sind einige Hilfsfunktionen zusammengefasst.
+ */
 var Feld = {
 
+    // Konstanten fuer die Felder, zur leichten Verwendung z.B. in Unit-Tsets
     a8: 0,
     b8: 1,
     c8: 2,
@@ -154,16 +181,30 @@ var Feld = {
     g1: 62,
     h1: 63,
 
+
+    /**
+     * Wandelt ein Feld aus Zeichenkette, z.B. "e4" in eine Nummer um.
+     *
+     * @param {string} name Name des Feldes
+     * @returns {number} Nummer des Feldes, oder undefined falls kein gueltiger Name
+     */
     nameNachNr: function (name) {
-        if (typeof (name) !== "string" || !name.match(/[a-h][1-8]/)) {
-            return undefined;
-        } else {
-            var linie = name.charAt(0),
-                reihe = name.charAt(1);
-            return "abcdefgh".indexOf(linie) + (8 - reihe) * 8;
+        var nr, linie, reihe;
+
+        if (typeof name === "string" && name.match(/[a-h][1-8]/)) {
+            linie = name.charAt(0);
+            reihe = name.charAt(1);
+            nr = "abcdefgh".indexOf(linie) + (8 - reihe) * 8;
         }
+        return nr;
     },
 
+    /**
+     * Berechnet aus der Nummer den Namen des Feldes.
+     *
+     * @param {number} nr Nummer des Feldes
+     * @returns {string}
+     */
     nrNachName: function (nr) {
         var spalte = nr % 8,
             zeile = (nr - spalte) / 8; // ganzzahlige Division
@@ -173,18 +214,26 @@ var Feld = {
     /**
      * Berechnet die Feldnummer aus Koordinaten (Zeile und Spalte).
      *
-     * @param zeile Zeile, 0-7
-     * @param spalte Spalte, 0-7
-     * @return die Feldnummer (0-63), oder undefined, falls die Koordniaten ausserhalb des erlaubten Bereichs
+     * @param {number} zeile Zeile, 0-7
+     * @param {number} spalte Spalte, 0-7
+     * @return {number} die Feldnummer (0-63), oder undefined, falls die Koordniaten ausserhalb des erlaubten Bereichs
      */
     ausKoordinaten: function (zeile, spalte) {
-        if (zeile < 0 || zeile > 7 || spalte < 0 || spalte > 7) {
-            return undefined;
-        } else {
-            return zeile * 8 + spalte;
+        var nr;
+        if (zeile >= 0 && zeile <= 7 && spalte >= 0 && spalte <= 7) {
+            nr = zeile * 8 + spalte;
         }
+        return nr;
     },
 
+    /**
+     * Ermittelt aus einem Startfeld und einem Richtungsvektor (dx, dy) ein neues Feld.
+     *
+     * @param {number} start Startfeld
+     * @param {number} dx Richtung x
+     * @param {number} dy  Richtung y
+     * @returns {number} Nr. des Feldes, oder undefines wenn ausserhalb des Brettes
+     */
     ausBewegung: function (start, dx, dy) {
         var feld,
             spalte = start % 8,
@@ -193,21 +242,38 @@ var Feld = {
         spalte += dx;
         zeile += dy;
 
-        if (!(zeile < 0 || zeile > 7 || spalte < 0 || spalte > 7)) {
+        if (zeile >= 0 && zeile <= 7 && spalte >= 0 && spalte <= 7) {
             feld = zeile * 8 + spalte;
         }
         return feld;
     },
 
+    /**
+     * Liefert die Spaltennummer zu einem Feld.
+     *
+     * @param {number} feldNummer
+     * @returns {number}
+     */
     spalte: function (feldNummer) {
         return feldNummer % 8;
     },
 
+    /**
+     * Liefert die Zeilennummer zu einem Feld.
+     *
+     * @param {number} feldNummer
+     * @returns {number}
+     */
     zeile: function (feldNummer) {
         return ((feldNummer - (feldNummer % 8))) / 8;
     }
 };
 
+/**
+ * Bewegung einer Figur im Schach.
+
+ * @constructor
+ */
 function Zug(a, b, c) {
     if (arguments.length === 3) {
         this.von = a;
@@ -220,7 +286,7 @@ function Zug(a, b, c) {
         // TODO: Grottig!
 
     } else if (arguments.length === 1 && typeof a === "string") {
-        if (a.length == 4 && a.match(/[a-h][1-8][a-h][1-8]/)) {
+        if (a.length === 4 && a.match(/[a-h][1-8][a-h][1-8]/)) {
             this.von = Feld.nameNachNr(a.substr(0, 2));
             this.nach = Feld.nameNachNr(a.substr(2, 2));
         } else if (a.match(/[a-h][1-8][a-h][1-8][QBNR]/)) {
@@ -231,28 +297,54 @@ function Zug(a, b, c) {
     }
 }
 
-Zug.ausZeichenkette = function(s) {
-    var von, nach;
-    if (typeof s === "string" && s.match(/[a-h][1-8][a-h][1-8]/)) {
-        von = Feld.nameNachNr(s.substr(0, 2));
-        nach = Feld.nameNachNr(s.substr(2, 2));
-        return new Zug(von, nach);
-    } else {
-        return undefined;
+/**
+ * Erzeugt einen Zug aus einer Zeichenkette
+ *
+ * @static
+ * @param {String} s Zug als Zeichenkette
+ * @returns {Zug} den Zug falls gueltig, oder undefined
+ */
+Zug.ausZeichenkette = function (s) {
+    var von, nach, umwandlung, zug;
+    if (typeof s === "string") {
+        if (s.length === 4 && s.match(/[a-h][1-8][a-h][1-8]/)) {
+            von = Feld.nameNachNr(s.substr(0, 2));
+            nach = Feld.nameNachNr(s.substr(2, 2));
+            zug = new Zug(von, nach);
+        } else if (s.length === 5 && s.match(/[a-h][1-8][a-h][1-8][QBNR]/)) {
+            von = Feld.nameNachNr(s.substr(0, 2));
+            nach = Feld.nameNachNr(s.substr(2, 2));
+            umwandlung =  FigurenArt.ausBuchstabe(s.substr(4));
+            zug = new Zug(von, nach, umwandlung);
+        }
     }
+
+    return zug;
 };
 
+/**
+ * Liefert den Zug als Zeichenkette zurueck, z.B. "e2e4"
+ *
+ * @returns {String}
+ */
 Zug.prototype.toString = function () {
     var sVon, sNach, sUm;
 
     sVon = Feld.nrNachName(this.von);
     sNach = Feld.nrNachName(this.nach);
-    sUm = (this.umwandlung == undefined) ? '' : this.umwandlung;
+    sUm = (this.umwandlung === undefined) ? '' : this.umwandlung;
 
 
     return sVon + sNach + sUm;
 };
 
+/**
+ * Eine Stellung repraesentiert die Spielsituation. Fuer den ersten Wurf reicht es zu wissen wo die Figuren stehen,
+ * und wer am Zug ist.
+ *
+ * @param s andere Stellung (dann wird kopiert), oder nichts.
+ * @constructor
+ */
 function Stellung(s) {
     var zeile, i, aufstellung;
 
@@ -311,10 +403,22 @@ function Stellung(s) {
     }
 }
 
+/**
+ * Liefert die Figur zurueck, die auf dem Feld steht. Oder undefined, falls das Feld frei ist.
+ *
+ * @param feld
+ * @returns {Figur} die Figur auf dem Feld oder undefined
+ */
 Stellung.prototype.aufFeld = function (feld) {
     return this.brett[feld];
 };
 
+/**
+ * Fuehrt den Zug aus, und liefert eine neue Stellung zurueck. Die Stellung selbst bleibt dabei unveraendert.
+ *
+ * @param zug
+ * @returns {Stellung}
+ */
 Stellung.prototype.fuehreZugAus = function (zug) {
     var neueStellung = new Stellung(this),
         figur = neueStellung.brett[zug.von],
@@ -399,10 +503,70 @@ Stellung.prototype.fuehreZugAus = function (zug) {
     return neueStellung;
 };
 
+/**
+ * Liefert die Stellung als Zeichenkette in FEN-Notation zurueck.
+ *
+ * @returns {string}
+ */
+Stellung.prototype.toString = function () {
+    var result = '',
+        zeile,
+        spalte,
+        feld,
+        figur,
+        leer;
+
+    leer = 0;
+    for (zeile = 0; zeile < 8; zeile += 1) {
+        for (spalte = 0; spalte < 8; spalte += 1) {
+            feld = Feld.ausKoordinaten(zeile,spalte);
+            figur = this.brett[feld];
+            if (figur === undefined) {
+                leer += 1;
+            } else {
+                result += figur.toString();
+                if (leer > 0) {
+                    result += leer;
+                    leer = 0;
+                }
+            }
+        }
+        if (leer > 0) {
+            result += leer;
+            leer = 0;
+        }
+        if (zeile < 7) {
+            result += '/'
+        }
+    }
+
+    result += ' ';
+    result += this.amZug;
+    result += ' ';
+    result += this.rochadeRechte;
+    result += ' ';
+    result += this.enPassant === undefined ? '-' : this.enPassant;
+    result += ' 0 1';
+
+    return result;
+}
+
+/**
+ * Prueft, ob das Feld frei ist, also keine Figur dort steht.
+ *
+ * @param feld
+ * @returns {boolean}
+ */
 Stellung.prototype.istFrei = function (feld) {
     return this.brett[feld] === undefined;
 };
 
+/**
+ * Liefert das Feld zurueck, auf dem der Koenig der angegebenen Farbe steht.
+ *
+ * @param {Farbe} farbe
+ * @returns {*}
+ */
 Stellung.prototype.findeKoenig = function (farbe) {
     var feld,
         figur;
