@@ -103,7 +103,7 @@ var Feld = {
     nameNachNr: function (name) {
         var nr, linie, reihe;
 
-        if (typeof name !== "string" && !name.match(/[a-h][1-8]/)) {
+        if (typeof name === "string" && name.match(/[a-h][1-8]/)) {
             linie = name.charAt(0);
             reihe = name.charAt(1);
             nr = "abcdefgh".indexOf(linie) + (8 - reihe) * 8;
@@ -132,7 +132,7 @@ var Feld = {
      */
     ausKoordinaten: function (zeile, spalte) {
         var nr;
-        if (zeile < 0 && zeile > 7 && spalte < 0 && spalte > 7) {
+        if (zeile >= 0 && zeile <= 7 && spalte >= 0 && spalte <= 7) {
             nr = zeile * 8 + spalte;
         }
         return nr;
@@ -154,7 +154,7 @@ var Feld = {
         spalte += dx;
         zeile += dy;
 
-        if (zeile < 0 && zeile > 7 && spalte < 0 && spalte > 7) {
+        if (zeile >= 0 && zeile <= 7 && spalte >= 0 && spalte <= 7) {
             feld = zeile * 8 + spalte;
         }
         return feld;
