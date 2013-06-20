@@ -48,25 +48,43 @@ function xboard() {
 }
 
 process.stdin.on('data', function (text) {
-    var zug;
+    var zug, zeilen, zeile, i;
 
-    if (text === 'xboard\n') {
-        xboard();
-    }
+    zeilen = text.split('\n');
+    for (i = 0; i < zeilen.length; i += 1) {
+        zeile = zeilen[i];
+        console.log('# (DokChess) line: ['  + zeile + ']');
 
-    if (text === 'quit\n') {
-        quit();
-    }
+        if (zeile === 'xboard') {
+            console.log('');
+        }
 
-    if (text === 'new\n') {
-        stellung = new Stellung();
-    }
+        if (zeile === 'quit') {
+            process.exit();
+        }
 
-    zug = Zug.ausZeichenkette(text);
-    if (zug !== undefined) {
-        stellung = stellung.fuehreZugAus(zug);
-        zug = algorithmus.ermittleZug(stellung);
-        console.log('move ' + zug);
-        stellung = stellung.fuehreZugAus(zug);
+        if (zeile === 'new') {
+            stellung = new Stellung();
+        }
+
+        if (zeile === 'white') {
+            console.log('# (DokChess) weiss am Zug');
+            zug = algorithmus.ermittleZug(stellung);
+            console.log('move ' + zug);
+            stellung = stellung.fuehreZugAus(zug);
+            console.log('# (DokChess) Brett nach ' + zug + ': [' + stellung + ']');
+        }
+
+        zug = Zug.ausZeichenkette(zeile);
+        if (zug !== undefined) {
+            console.log('# (DokChess) Eingegangener Zug: ' + zug);
+            stellung = stellung.fuehreZugAus(zug);
+            console.log('# (DokChess) Brett nach ' + zug + ': [' + stellung + ']');
+
+            zug = algorithmus.ermittleZug(stellung);
+            console.log('move ' + zug);
+            stellung = stellung.fuehreZugAus(zug);
+            console.log('# (DC Iter 3) Brett nach ' + zug + ': [' + stellung + ']');
+        }
     }
 });
