@@ -51,40 +51,33 @@ function findeBauernZugMitEinemFeldFrei(stellung) {
     }
 }
 
-function quit() {
-    process.exit();
-}
-
-function xboard() {
-    console.log('');
-}
-
 process.stdin.on('data', function (text) {
-    var zug;
+    var zug, zeilen, zeile, i;
 
-    if (text === 'xboard\n') {
-        xboard();
+    zeilen = text.split('\n');
+
+    for (i = 0; i < zeilen.length; i += 1) {
+        zeile = zeilen[i];
+
+        if (zeile === 'xboard') {
+            console.log('');
+        }
+
+        if (zeile === 'quit') {
+            process.exit();
+        }
+
+        if (zeile === 'new') {
+            stellung = new Stellung();
+        }
+
+        zug = Zug.ausZeichenkette(zeile);
+        if (zug !== undefined) {
+            stellung = stellung.fuehreZugAus(zug);
+            zug = findeBauernZugMitEinemFeldFrei(stellung);
+            console.log('move ' + zug);
+            stellung = stellung.fuehreZugAus(zug);
+        }
     }
-
-    if (text === 'quit\n') {
-        quit();
-    }
-
-    if (text === 'new\n') {
-        stellung = new Stellung();
-    }
-
-    zug = Zug.ausZeichenkette(text);
-    if (zug !== undefined) {
-        stellung = stellung.fuehreZugAus(zug);
-
-        zug = findeBauernZugMitEinemFeldFrei(stellung);
-
-        console.log('move ' + zug);
-
-        stellung = stellung.fuehreZugAus(zug);
-
-    }
-
 });
 
