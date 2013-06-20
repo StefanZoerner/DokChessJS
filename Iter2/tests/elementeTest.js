@@ -44,9 +44,12 @@ exports['FigurenArt'] = function (test) {
 
 exports['Figur'] = function (test) {
 
-    var weisserBauer = new Figur(Farbe.WEISS, FigurenArt.BAUER);
+    var weisserBauer, schwarzerTurm;
 
-    var schwarzerTurm = Figur.ausBuchstabe('r');
+    weisserBauer = new Figur(Farbe.WEISS, FigurenArt.BAUER);
+    test.equal(weisserBauer.toString(), 'P');
+
+    schwarzerTurm = Figur.ausBuchstabe('r');
     test.equal(schwarzerTurm.art, FigurenArt.TURM);
     test.equal(schwarzerTurm.farbe, Farbe.SCHWARZ);
 
@@ -68,9 +71,31 @@ exports['Zug'] = function (test) {
     test.done();
 };
 
+exports['Zug.ausZeichenkette'] = function (test) {
+
+    var zug = Zug.ausZeichenkette("e2e4");
+    test.equal(zug.von, Feld.nameNachNr("e2"));
+    test.equal(zug.nach, Feld.nameNachNr("e4"));
+    test.equal(zug.umwandlung, undefined);
+
+    zug = Zug.ausZeichenkette("a7a8Q");
+    test.equal(zug.von, Feld.nameNachNr("a7"));
+    test.equal(zug.nach, Feld.nameNachNr("a8"));
+    test.equal(zug.umwandlung, FigurenArt.DAME);
+
+    zug = Zug.ausZeichenkette("");
+    test.equal(zug, undefined);
+
+    zug = Zug.ausZeichenkette("Hallo");
+    test.equal(zug, undefined);
+
+    test.done();
+};
+
+
 exports['Stellung.ausFEN'] = function (test) {
-    var fen = "4k3/8/8/3Pp3/8/8/8/K7 w - e6 0 1";
-    var stellung = new Stellung(fen);
+    var fen = "4k3/8/8/3Pp3/8/8/8/K7 w - e6 0 1",
+        stellung = new Stellung(fen);
 
     test.equal(stellung.amZug, Farbe.WEISS);
     test.equal(stellung.enPassant, Feld.nameNachNr("e6"));

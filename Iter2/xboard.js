@@ -32,34 +32,33 @@ var EinfacheZugauswahl = zugauswahl.EinfacheZugauswahl;
 
 var stellung = new Stellung();
 
-function quit() {
-    process.exit();
-}
-
-function xboard() {
-    console.log('');
-}
-
 process.stdin.on('data', function (text) {
-    var zug;
+    var zug, zeilen, zeile, i;
 
-    if (text === 'xboard\n') {
-        xboard();
-    }
+    zeilen = text.split('\n');
 
-    if (text === 'quit\n') {
-        quit();
-    }
+    for (i = 0; i < zeilen.length; i += 1) {
+        zeile = zeilen[i];
 
-    if (text === 'new\n') {
-        stellung = new Stellung();
-    }
+        if (zeile === 'xboard') {
+            console.log('');
+        }
 
-    zug = Zug.ausZeichenkette(text);
-    if (zug !== undefined) {
-        stellung = stellung.fuehreZugAus(zug);
-        zug = EinfacheZugauswahl.ermittleZug(stellung);
-        console.log('move ' + zug);
-        stellung = stellung.fuehreZugAus(zug);
+        if (zeile === 'quit') {
+            process.exit();
+        }
+
+        if (zeile === 'new') {
+            stellung = new Stellung();
+        }
+
+        zug = Zug.ausZeichenkette(zeile);
+        if (zug !== undefined) {
+            console.log('# Eingegangener Zug: ' + zug);
+            stellung = stellung.fuehreZugAus(zug);
+            zug = EinfacheZugauswahl.ermittleZug(stellung);
+            console.log('move ' + zug);
+            stellung = stellung.fuehreZugAus(zug);
+        }
     }
 });
