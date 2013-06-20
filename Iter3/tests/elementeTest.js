@@ -79,6 +79,21 @@ exports['Stellung.ausFEN'] = function (test) {
     test.done();
 };
 
+exports['Stellung.fuehreZugAus.e2e4'] = function (test) {
+
+    var weisserBauer = new Figur(Farbe.WEISS, FigurenArt.BAUER),
+        zug = new Zug(Feld.e2, Feld.e4),
+        anfang = new Stellung(),
+        neueStellung = anfang.fuehreZugAus(zug);
+
+    test.equal(neueStellung.amZug, Farbe.SCHWARZ);
+    test.deepEqual(neueStellung.aufFeld(Feld.e2), undefined);
+    test.deepEqual(neueStellung.aufFeld(Feld.e4), weisserBauer);
+    test.equal(neueStellung.enPassant, Feld.e3);
+
+    test.done();
+};
+
 exports['Stellung.anfang'] = function (test) {
 
     var anfang = new Stellung();
@@ -89,6 +104,14 @@ exports['Stellung.anfang'] = function (test) {
 
     test.deepEqual(anfang.aufFeld(Feld.nameNachNr("e2")), weisserBauer);
     test.deepEqual(anfang.aufFeld(Feld.nameNachNr("a8")), schwarzerTurm);
+
+    test.done();
+};
+
+exports['Stellung.toString FEN'] = function (test) {
+
+    var stellung = new Stellung();
+    test.equal(stellung.toString(), 'rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1');
 
     test.done();
 };

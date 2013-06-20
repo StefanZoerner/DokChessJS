@@ -307,11 +307,14 @@ function Zug(a, b, c) {
 Zug.ausZeichenkette = function (s) {
     var von, nach, umwandlung, zug;
     if (typeof s === "string") {
+
+        s = s.toLocaleLowerCase();
+
         if (s.length === 4 && s.match(/[a-h][1-8][a-h][1-8]/)) {
             von = Feld.nameNachNr(s.substr(0, 2));
             nach = Feld.nameNachNr(s.substr(2, 2));
             zug = new Zug(von, nach);
-        } else if (s.length === 5 && s.match(/[a-h][1-8][a-h][1-8][QBNR]/)) {
+        } else if (s.length === 5 && s.match(/[a-h][1-8][a-h][1-8][qbnr]/)) {
             von = Feld.nameNachNr(s.substr(0, 2));
             nach = Feld.nameNachNr(s.substr(2, 2));
             umwandlung =  FigurenArt.ausBuchstabe(s.substr(4));
