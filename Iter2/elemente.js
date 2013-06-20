@@ -430,12 +430,21 @@ Stellung.prototype.fuehreZugAus = function (zug) {
     neueStellung.brett[zug.nach] = figur;
     neueStellung.brett[zug.von] = undefined;
 
-    // enPassant
     neueStellung.enPassant = undefined;
     if (figur.art === FigurenArt.BAUER) {
+
+        // en passant Feld setzen
         if (Math.abs(Feld.zeile(zug.von) - Feld.zeile(zug.nach)) == 2) {
-            dy = (this.amZug == Farbe.WEISS) ? -1 : 1
+            dy = (this.amZug == Farbe.WEISS) ? -1 : 1;
             neueStellung.enPassant = Feld.ausKoordinaten(Feld.zeile(zug.von) + dy, Feld.spalte(zug.von));
+        }
+
+        // enPassant schlagen
+        if (Math.abs(Feld.spalte(zug.von) - Feld.spalte(zug.nach)) == 1) {
+            if (zug.nach === this.enPassant) {
+                dy = (this.amZug === Farbe.WEISS) ? 1 : -1;
+                neueStellung.brett[Feld.ausBewegung(this.enPassant, 0, dy)] = undefined;
+            }
         }
     }
 

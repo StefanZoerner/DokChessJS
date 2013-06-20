@@ -44,9 +44,12 @@ exports['FigurenArt'] = function (test) {
 
 exports['Figur'] = function (test) {
 
-    var weisserBauer = new Figur(Farbe.WEISS, FigurenArt.BAUER);
+    var weisserBauer, schwarzerTurm;
 
-    var schwarzerTurm = Figur.ausBuchstabe('r');
+    weisserBauer = new Figur(Farbe.WEISS, FigurenArt.BAUER);
+    test.equal(weisserBauer.toString(), 'P');
+
+    schwarzerTurm = Figur.ausBuchstabe('r');
     test.equal(schwarzerTurm.art, FigurenArt.TURM);
     test.equal(schwarzerTurm.farbe, Farbe.SCHWARZ);
 
@@ -69,12 +72,14 @@ exports['Zug'] = function (test) {
 };
 
 exports['Stellung.ausFEN'] = function (test) {
-    var fen = "4k3/8/8/3Pp3/8/8/8/K7 w - e6 0 1";
-    var stellung = new Stellung(fen);
+    var fen = "4k3/8/8/3Pp3/8/8/8/K7 w - e6 0 1",
+        stellung = new Stellung(fen);
 
     test.equal(stellung.amZug, Farbe.WEISS);
     test.equal(stellung.enPassant, Feld.nameNachNr("e6"));
 
+    // und zureuck
+    test.equal(stellung.toString(), fen);
 
     test.done();
 };
@@ -93,6 +98,51 @@ exports['Stellung.fuehreZugAus.e2e4'] = function (test) {
 
     test.done();
 };
+
+exports['Stellung.fuehreZugAus.schlagenEnPassant weiss'] = function (test) {
+
+    var zug,
+        fen = "1rb1kbnr/p2ppppp/2p1n3/Pp1PP3/R7/2N2N2/1PP2PPP/2BQ1RK1 w - b6 0 1",
+        stellung = new Stellung(fen);
+
+    zug = new Zug("a5b6");
+    stellung = stellung.fuehreZugAus(zug);
+
+    test.equal(stellung.enPassant, undefined);
+    test.ok(stellung.istFrei(Feld.b5));
+
+    test.done();
+};
+
+exports['Stellung.fuehreZugAus.schlagenEnPassant schwarz'] = function (test) {
+
+    var zug,
+        fen = "rnbqkbnr/ppp1p1pp/8/8/3pPp2/2N2N2/PPPP1PPP/R1BQKB1R b KQkq e3 0 1",
+        stellung = new Stellung(fen),
+        neueStellung;
+
+    // Bauer schlaegt en Passant
+    zug = new Zug("f4e3");
+    neueStellung = stellung.fuehreZugAus(zug);
+    test.equal(neueStellung.enPassant, undefined);
+    test.ok(neueStellung.istFrei(Feld.e4));
+
+    // anderer Bauer schlaegt en Passant
+    zug = new Zug("d4e3");
+    neueStellung = stellung.fuehreZugAus(zug);
+    test.equal(neueStellung.enPassant, undefined);
+    test.ok(neueStellung.istFrei(Feld.e4));
+
+    // Bauer schlaegt andere Figur
+    zug = new Zug("d4c3");
+    neueStellung = stellung.fuehreZugAus(zug);
+    test.equal(neueStellung.enPassant, undefined);
+    test.ok(!neueStellung.istFrei(Feld.e4));
+
+    test.done();
+};
+
+
 
 exports['Stellung.anfang'] = function (test) {
 
