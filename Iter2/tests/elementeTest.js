@@ -100,6 +100,8 @@ exports['Stellung.ausFEN'] = function (test) {
     test.equal(stellung.amZug, Farbe.WEISS);
     test.equal(stellung.enPassant, Feld.nameNachNr("e6"));
 
+    // und zureuck
+    test.equal(stellung.toString(), fen);
 
     test.done();
 };

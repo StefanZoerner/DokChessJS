@@ -534,11 +534,11 @@ Stellung.prototype.toString = function () {
             if (figur === undefined) {
                 leer += 1;
             } else {
-                result += figur.toString();
                 if (leer > 0) {
                     result += leer;
                     leer = 0;
                 }
+                result += figur.toString();
             }
         }
         if (leer > 0) {
@@ -555,7 +555,7 @@ Stellung.prototype.toString = function () {
     result += ' ';
     result += this.rochadeRechte;
     result += ' ';
-    result += this.enPassant === undefined ? '-' : this.enPassant;
+    result += this.enPassant === undefined ? '-' : Feld.nrNachName(this.enPassant);
     result += ' 0 1';
 
     return result;
