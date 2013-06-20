@@ -60,6 +60,9 @@ function findeBauernZugMitEinemFeldFrei(stellung) {
     }
 }
 
+/**
+ * Einfache Implmenetierung des xboard-Protokolls.
+ */
 process.stdin.on('data', function (text) {
     var zug, zeilen, zeile, i;
 
