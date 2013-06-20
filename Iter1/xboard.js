@@ -31,20 +31,29 @@ var Farbe = elemente.Farbe;
 
 var stellung = new Stellung();
 
+/**
+ * Liefert den ersten gueltigen Bauernzug (Bauer 1 vor) fuer den Spieler am Zug, falls vorhanden.
+ *
+ * @param {Stellung} stellung
+ * @returns {Zug}
+ */
 function findeBauernZugMitEinemFeldFrei(stellung) {
-    var farbe, i, figur, zeile, spalte, dy, ziel;
+    var feld, figur,
+        zeile, spalte,
+        richtung,
+        ziel;
 
-    for (i = 0; i < 64; i += 1) {
-        if (!stellung.istFrei(i)) {
-            figur = stellung.brett[i];
+    for (feld = 0; feld < 64; feld += 1) {
+        if (!stellung.istFrei(feld)) {
+            figur = stellung.brett[feld];
             if (figur.farbe === stellung.amZug && figur.art === FigurenArt.BAUER) {
-                zeile = Feld.zeile(i);
-                spalte = Feld.spalte(i);
+                zeile = Feld.zeile(feld);
+                spalte = Feld.spalte(feld);
 
-                dy = (farbe === Farbe.WEISS) ? -1 : 1;
-                ziel = Feld.ausKoordinaten(zeile + dy, spalte);
+                richtung = (figur.farbe.amZug === Farbe.WEISS) ? -1 : 1;
+                ziel = Feld.ausKoordinaten(zeile + richtung, spalte);
                 if (stellung.istFrei(ziel)) {
-                    return new Zug(i, ziel);
+                    return new Zug(feld, ziel);
                 }
             }
         }
@@ -73,6 +82,7 @@ process.stdin.on('data', function (text) {
 
         zug = Zug.ausZeichenkette(zeile);
         if (zug !== undefined) {
+            console.log('# Eingegangener Zug: ' + zug);
             stellung = stellung.fuehreZugAus(zug);
             zug = findeBauernZugMitEinemFeldFrei(stellung);
             console.log('move ' + zug);
