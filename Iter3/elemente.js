@@ -545,7 +545,7 @@ Stellung.prototype.toString = function () {
     result += ' ';
     result += this.rochadeRechte;
     result += ' ';
-    result += this.enPassant === undefined ? '-' : this.enPassant;
+    result += this.enPassant === undefined ? '-' : Feld.nrNachName(this.enPassant);
     result += ' 0 1';
 
     return result;
