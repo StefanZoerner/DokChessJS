@@ -16,6 +16,8 @@
  * along with DokChess.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+"use strict";
+
 var contains = function (array, obj) {
     var i = 0;
 
