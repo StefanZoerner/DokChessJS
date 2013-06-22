@@ -61,6 +61,24 @@ exports['Spielregeln.ermittelGueltigeZuege.anfang'] = function (test) {
     test.done();
 };
 
+exports['Spielregeln.ermittelGueltigeZuege.KoenigInOpposition'] = function (test) {
+    var fen, stellung, zuege, i;
+
+    // Schwarzer Koenig in Opposition, weiss am Zug
+    fen = '8/3k4/8/3K4/8/8/8/8 w - - 1 1';
+    stellung = new Stellung(fen);
+    zuege = Spielregeln.ermittelGueltigeZuege(stellung);
+
+    test.equal(zuege.length, 5);
+    for (i = 0; i < zuege.length; i += 1) {
+        zuege[i] = zuege[i].toString();
+    }
+    test.ok(!contains(zuege, "d5d6"));
+    test.ok(contains(zuege, "d5e5"));
+
+    test.done();
+};
+
 exports['Spielregeln.ermittelGueltigeZuege(), Bauernzuege R101'] = function (test) {
     var fen = "2k5/8/8/8/8/3p4/2P5/7K w - - 0 1",
         erwarteteZuege = ["c2c3", "c2c4", "c2d3", "h1g1", "h1g2", "h1h2"];
